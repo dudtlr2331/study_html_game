@@ -4,6 +4,16 @@ window.addEventListener("keyup", onKeyup, false);
 
 var intPlayerX = 350;
 var intPlayerY = 250;
+var imgMissileX = 0;
+var imgMissileY = 0;
+
+var imgMissileX2 = 740;
+var imgMissileY2 = 0;
+var imgMissileX3 = 0;
+var imgMissileY3 = 540;
+var imgMissileX4 = 740;
+var imgMissileY4 = 540;
+
 var intPlayerSpeed = 50;
 
 var GAME_START_READY = 0;
@@ -21,6 +31,22 @@ var imgPlayer = new Image();
 imgPlayer.src = "../images/player.png"
 imgPlayer.addEventListener("load", drawScreen, false);
 
+var imgMissile = new Image();
+imgMissile.src = "../images/missile.png"
+imgMissile.addEventListener("load", drawScreen, false);
+
+var imgMissile2 = new Image();
+imgMissile2.src = "../images/missile.png"
+imgMissile2.addEventListener("load", drawScreen, false);
+
+var imgMissile3 = new Image();
+imgMissile3.src = "../images/missile.png"
+imgMissile3.addEventListener("load", drawScreen, false);
+
+var imgMissile4 = new Image();
+imgMissile4.src = "../images/missile.png"
+imgMissile4.addEventListener("load", drawScreen, false);
+
 function drawScreen(){
     var theCanvas =  document.getElementById("GameCanvas");
     var Context = theCanvas.getContext("2d");
@@ -30,6 +56,10 @@ function drawScreen(){
 
     Context.drawImage(imgBackground, 0, 0);
     Context.drawImage(imgPlayer, intPlayerX, intPlayerY);
+    Context.drawImage(imgMissile, imgMissileX, imgMissileY);
+    Context.drawImage(imgMissile2, imgMissileX2, imgMissileY2);
+    Context.drawImage(imgMissile3, imgMissileX3, imgMissileY3);
+    Context.drawImage(imgMissile4, imgMissileX4, imgMissileY4);
 
     Context.fillStyle = "#ffffff";
     Context.font = "50px Arial";
@@ -46,10 +76,24 @@ function drawScreen(){
     }
 }
 
+function InGameUpdate(){
+    imgMissileX +=intPlayerSpeed;
+    imgMissileY +=intPlayerSpeed; 
+    imgMissileX2 -=intPlayerSpeed;
+    imgMissileY2 +=intPlayerSpeed;
+    imgMissileX3 +=intPlayerSpeed;
+    imgMissileY3 -=intPlayerSpeed;
+    imgMissileX4 -=intPlayerSpeed;
+    imgMissileY4 -=intPlayerSpeed;
+    drawScreen();
+}
+
 function onKeydown(e){
     if(gameState == GAME_START_READY){    
-        if(e.keyCode == 13)
+        if(e.keyCode == 13){
             gameState = GAME_START_GAME;
+            setInterval(InGameUpdate, 100)
+        }
     }
 
     if(gameState == GAME_START_GAME){
