@@ -1,10 +1,10 @@
-window.addEventListener("load", drawScreen, false);
+window.addEventListener("load", drawScreen, false)
 window.addEventListener("keydown", onKeydown, false);
 window.addEventListener("keyup", onKeyup, false);
 
 var intPlayerX = 350;
 var intPlayerY = 250;
-var intPlayerSpeed = 50;
+var intPlayerSpeed = 5;
 
 var GAME_START_READY = 0;
 var GAME_START_GAME = 1;
@@ -22,6 +22,12 @@ imgPlayer.src = "../images/player.png"
 
 var imgMissile = new Image();
 imgMissile.src = "../images/missile.png";
+
+var isKeyPressed = [];
+
+var fps = 40;
+
+var intervalId = 0;
 
 //수치가 계산된 내용을 그려주는 역활
 function drawScreen(){
@@ -90,56 +96,72 @@ function InGameUpdate(){
     }
     intTime+=100;
     MoveMissile();
+    MoveCharator();
+    drawScreen();
 }
+
+function MoveCharator(){
+    if(isKeyPressed[37]){
+        intPlayerX-=intPlayerSpeed;
+            if(intPlayerX < 0){
+                intPlayerX = 0;
+            }
+    }
+    if(isKeyPressed[38]){
+        intPlayerY-=intPlayerSpeed;
+            if(intPlayerY < 0){
+                intPlayerY = 0;
+            }
+    }
+    if(isKeyPressed[39]){
+        intPlayerX+=intPlayerSpeed;
+            if(intPlayerX > 742){
+                intPlayerX = 742;
+            }
+    }
+    if(isKeyPressed[40]){
+        intPlayerY+=intPlayerSpeed;
+            if(intPlayerY > 544){
+                intPlayerY = 544;
+            }
+    }
+}
+
 function MoveMissile(){
     //움직임을 봐쭤주는 로직 작성..
     for(var i=0; i<arrMissiles.length; i++){
        arrMissiles[i].x += arrMissiles[i].go_x;
-       arrMissiles[i].y += arrMissiles[i].go_y;
+       arrMissiles[i].x += arrMissiles[i].go_y;
+
+
+       if(IsCollisionWithPlayer(arrMissiles[i].x, arrMissiles[i].y)){
+           onGameOver();
+       }
     }
-    drawScreen();
 }
+
+function onGameOver(){
+    gameState = GAME_START_OVER;
+    clearInterval(intervalId);
+}
+
 function onKeydown(e){
     if(gameState == GAME_START_READY){    
         if(e.keyCode == 13){
             gameState = GAME_START_GAME;
-            setInterval(InGameUpdate, 100);
+            intervalId = setInterval(InGameUpdate, 1000/fps);
         }
     }
     if(gameState == GAME_START_GAME){
-        switch(e.keyCode){
-            case 37: //왼쪽
-            intPlayerX-=intPlayerSpeed;
-                if(intPlayerX < 0){
-                    intPlayerX = 0;
-                }
-                break;
-            case 38: // 위
-                intPlayerY-=intPlayerSpeed;
-                if(intPlayerY < 0){
-                    intPlayerY = 0;
-                }
-                break;
-            case 39: //오른쪽
-                intPlayerX+=intPlayerSpeed;
-                if(intPlayerX > 742){
-                    intPlayerX = 742;
-                }
-                break;
-            case 40: //아래
-                intPlayerY+=intPlayerSpeed;
-                if(intPlayerY > 544){
-                    intPlayerY = 544;
-                }
-                break;
-        }
+        this.isKeyPressed[e.keyCode] = true;
     }
     if(gameState == GAME_START_OVER){
         if(e.keyCode == 13)
         gameState = GAME_START_READY;
     }
-    drawScreen();
 }
 function onKeyup(e){
-    drawScreen();
+    this.isKeyPressed[e.keyCode] = false;
+
+    // drawScreen();
 }
