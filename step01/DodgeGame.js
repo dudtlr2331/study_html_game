@@ -25,7 +25,7 @@ imgMissile.src = "../images/missile.png";
 
 var isKeyPressed = [];
 
-var fps = 40;
+var fps = 30;
 
 var intervalId = 0;
 
@@ -131,13 +131,46 @@ function MoveMissile(){
     //움직임을 봐쭤주는 로직 작성..
     for(var i=0; i<arrMissiles.length; i++){
        arrMissiles[i].x += arrMissiles[i].go_x;
-       arrMissiles[i].x += arrMissiles[i].go_y;
+       arrMissiles[i].y += arrMissiles[i].go_y;
 
 
        if(IsCollisionWithPlayer(arrMissiles[i].x, arrMissiles[i].y)){
            onGameOver();
        }
     }
+}
+
+function IsCollisionWithPlayer(missileX,missileY){
+    var isLeft = false;
+    var isRight = false;
+    var isTop = false;
+    var isBottom = false;
+
+    if(intPlayerX + 2.5 < missileX + 27.5){
+        isLeft = true;
+    }
+    if(intPlayerX + 27.5 > missileX + 2.5){
+        isRight = true;
+    }
+    if(intPlayerY + 27.5 > missileY + 2.5){
+        isTop = true;
+    }
+    if(intPlayerY + 2.5 < missileY + 27.5){
+        var isBottom = true;
+    }
+
+    if(isLeft && isRight && isTop && isBottom){
+        return true;
+    }
+    return false;
+
+    // if(intPlayerX + 55 > missileX + 5 &&
+    //     intPlayerX + 5 < missileX + 55 &&
+    //     intPlayerY + 5 < missileY + 55 &&
+    //     intPlayerY + 55 > missileY + 5){
+    //         return true;
+    //     }
+    // return false;
 }
 
 function onGameOver(){
